@@ -8,4 +8,12 @@
     state: installed
 - name: Copy InfluxDB configuration
   template: src=influxdb.conf dest=/etc/influxdb/influxdb.conf
+- name: Install SSL cert for influxdb
+  copy:
+    content: '{{ ssl_key_and_certificate_combined }}'
+    dest: /etc/ssl/influxdb.pem
+    owner: root
+    group: root
+    mode: 0644
+  no_log: true
   notify: restart influxdb
