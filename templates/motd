@@ -1,0 +1,4 @@
+Useful commands:
+ - Service Management: sudo service influxdb start|stop|restart
+ - Check if influxdb is running: sudo netstat -tnlp
+ - Check why influxdb could not be started: sudo journalctl -xe
