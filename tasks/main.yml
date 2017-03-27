@@ -1,6 +1,10 @@
 ---
+- name: Sets the message of the day
+  template: src=motd dest=/etc/motd
 - name: Update apt cache.
-  apt: update_cache=yes cache_valid_time=86400
+  apt:
+    update_cache: yes
+    cache_valid_time: 86400
   changed_when: false
 - name: Ensure InfluxDB is installed.
   apt:
@@ -22,10 +26,18 @@
     proto: tcp
     port: 8083
     rule: allow
+    src: 192.168.125.0/24
 - name: Allow API endpoint through firewall
   ufw:
     proto: tcp
     port: 8086
     rule: allow
-- name: Sets the message of the day
-  template: src=motd dest=/etc/motd
+- name: Create admin user
+  command: /usr/bin/influx -execute "CREATE USER {{ influx_admin_user }} WITH PASSWORD '{{ influx_admin_pass }}' WITH ALL PRIVILEGES" -ssl -unsafeSsl
+  ignore_errors: yes
+- name: Sets auth-enabled in influxdb.conf
+  replace:
+    dest=/etc/influxdb/influxdb.conf
+    regexp='^# auth-enabled = false$'
+    replace='auth-enabled = true'
+  notify: restart influxdb
