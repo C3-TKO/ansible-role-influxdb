@@ -6,10 +6,26 @@
     update_cache: yes
     cache_valid_time: 86400
   changed_when: false
-- name: Ensure InfluxDB is installed.
+- name: Ensure influxDB is installed.
   apt:
     name: influxdb
     state: installed
+- name: Download influxDB .deb package
+  get_url:
+    url: http://ftp.us.debian.org/debian/pool/main/i/influxdb/influxdb_1.1.1%2bdfsg1-4_armhf.deb
+    dest: /tmp/influxdb_1.1.1_armhf.deb
+- name: Install influxDB .deb package
+  apt:
+    deb: /tmp/influxdb_1.1.1_armhf.deb
+- name: Copy InfluxDB configuration
+  template: src=influxdb.conf dest=/etc/influxdb/influxdb.conf
+- name: Download influxDB client .deb package
+  get_url:
+    url: http://ftp.us.debian.org/debian/pool/main/i/influxdb/influxdb-client_1.1.1+dfsg1-4_armhf.deb
+    dest: /tmp/influxdb-client_1.1.1_armhf.deb
+- name: Install influxDB client .deb package
+  apt:
+    deb: /tmp/influxdb-client_1.1.1_armhf.deb
 - name: Copy InfluxDB configuration
   template: src=influxdb.conf dest=/etc/influxdb/influxdb.conf
 - name: Install SSL cert for influxdb
@@ -21,6 +37,10 @@
     mode: 0644
   no_log: true
   notify: restart influxdb
+- name: Start influxDB service
+  service:
+    name: influxd
+    state: started
 - name: Allow Admin UI through firewall
   ufw:
     proto: tcp
@@ -35,9 +55,3 @@
 - name: Create admin user
   command: /usr/bin/influx -execute "CREATE USER {{ influx_admin_user }} WITH PASSWORD '{{ influx_admin_pass }}' WITH ALL PRIVILEGES" -ssl -unsafeSsl
   ignore_errors: yes
-- name: Sets auth-enabled in influxdb.conf
-  replace:
-    dest=/etc/influxdb/influxdb.conf
-    regexp='^# auth-enabled = false$'
-    replace='auth-enabled = true'
-  notify: restart influxdb
