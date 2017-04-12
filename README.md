@@ -10,7 +10,8 @@ This is an Ansible role for installing and configuring influxDB and the influxDB
 
 ## Dependencies
 
-This role expects that the host machine has already ufw setup
+This role expects that the host machine has already ufw and python setup - You can use my common role from the main repository to stup ufw and python 
+https://github.com/C3-TKO/my-pi-setups/tree/master/ansible/roles/common
 
 ## Example playbook
 
