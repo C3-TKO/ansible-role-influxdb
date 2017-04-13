@@ -1,6 +1,6 @@
 # ansible-role-influxdb
 
-This is an Ansible role for installing and configuring influxDB and the influxDB client packages on a rapsberry pi. InfluxDB will be configured to run on https and add an admin user. As this role is meant to be used within my my-pi-setups repository https://github.com/C3-TKO/my-pi-setups.
+This is an Ansible role for installing and configuring influxDB and the influxDB client packages on a rapsberry pi. InfluxDB will be configured to run on https and add an admin user. This role is meant to be used within my my-pi-setups repository https://github.com/C3-TKO/my-pi-setups.
 
 
 ## Requirements
