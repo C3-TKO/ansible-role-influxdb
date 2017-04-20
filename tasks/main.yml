@@ -1,33 +1,42 @@
 ---
 - name: Sets the message of the day
   template: src=motd dest=/etc/motd
+
 - name: Update apt cache.
   apt:
     update_cache: yes
     cache_valid_time: 86400
   changed_when: false
+
 - name: Ensure influxDB is installed.
   apt:
     name: influxdb
     state: installed
+
 - name: Download influxDB .deb package
   get_url:
     url: http://ftp.us.debian.org/debian/pool/main/i/influxdb/influxdb_1.1.1%2bdfsg1-4_armhf.deb
     dest: /tmp/influxdb_1.1.1_armhf.deb
+
 - name: Install influxDB .deb package
   apt:
     deb: /tmp/influxdb_1.1.1_armhf.deb
+
 - name: Copy InfluxDB configuration
   template: src=influxdb.conf dest=/etc/influxdb/influxdb.conf
+
 - name: Download influxDB client .deb package
   get_url:
     url: http://ftp.us.debian.org/debian/pool/main/i/influxdb/influxdb-client_1.1.1+dfsg1-4_armhf.deb
     dest: /tmp/influxdb-client_1.1.1_armhf.deb
+
 - name: Install influxDB client .deb package
   apt:
     deb: /tmp/influxdb-client_1.1.1_armhf.deb
+
 - name: Copy InfluxDB configuration
   template: src=influxdb.conf dest=/etc/influxdb/influxdb.conf
+
 - name: Install SSL cert for influxdb
   copy:
     content: '{{ ssl_key_and_certificate_combined }}'
@@ -37,16 +46,19 @@
     mode: 0644
   no_log: true
   notify: restart influxdb
+
 - name: Start influxDB service
   service:
     name: influxd
     state: started
+
 - name: Allow Admin UI through firewall
   ufw:
     proto: tcp
     port: 8083
     rule: allow
     src: 192.168.125.0/24
+
 - name: Allow API endpoint through firewall
   ufw:
     proto: tcp
