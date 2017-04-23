@@ -64,6 +64,7 @@
     proto: tcp
     port: 8086
     rule: allow
+
 - name: Create admin user
   command: /usr/bin/influx -execute "CREATE USER {{ influx_admin_user }} WITH PASSWORD '{{ influx_admin_pass }}' WITH ALL PRIVILEGES" -ssl -unsafeSsl
   ignore_errors: yes
